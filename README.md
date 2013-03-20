@@ -25,7 +25,6 @@ public:
  
     int getSize() const; // возвратить количество объектов типа Array
     Array *getMemory() const; // вернуть указатель на объект типа Array
-    Array &operator[] (int ); // перегруженная операция взятия индекса
     void setMatrix(); // заполнение матрицы
     void getMatrix(); // вывод матрицы
     Matrix operator+ (const Matrix &right);
