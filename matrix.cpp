@@ -1,4 +1,4 @@
-заголовочый код
+//заголовочый код
 #ifndef MATRIX_H
 #define MATRIX_H
  
@@ -22,16 +22,17 @@ public:
     Array *getMemory() const; // вернуть указатель на объект типа Array
     void setMatrix(); // заполнение матрицы
     void getMatrix(); // вывод матрицы
-    Matrix operator+ (const Matrix &right);
-    Matrix operator+= (const Matrix &right);
-    Matrix operator- (const Matrix &right);
-    const Matrix &operator= (const Matrix &right); // оператор присваивания
-    bool operator== (const Matrix &right) const;// оператор сравнения
+    Matrix operator+ (const Matrix &a);
+    Matrix operator+= (const Matrix &a);
+    Matrix operator- (const Matrix &a);
+    const Matrix &operator= (const Matrix &a); // оператор присваивания
+    bool operator== (const Matrix &a) const;// оператор сравнени
+    
 };
 #endif // MATRIX_H
 
 
-исходный код
+//исходный код
 #include "matrix.h"
  
 #include "array.h"
@@ -143,9 +144,9 @@ void Matrix::getMatrix() // вывод массива
     cout << std::endl; // новая строка
 }
  
-Matrix Matrix::operator+ (const Matrix &right)
+Matrix Matrix::operator+ (const Matrix &a)
 {
-    if (size != right.size || memory->getSize() != right.getMemory()->getSize())
+    if (size != a.size || memory->getSize() != a.getMemory()->getSize())
     {
         cout << "Массивы разного размера!\n";
         exit(1); // завершить работу программы
@@ -154,14 +155,14 @@ Matrix Matrix::operator+ (const Matrix &right)
     Matrix result(size, memory->getSize());
     for (int ix = 0; ix < size; ix++)
         for (int jx = 0; jx < memory->getSize(); jx++)
-            result.memory[ix][jx] = memory[ix][jx] + right.memory[ix][jx];
+            result.memory[ix][jx] = memory[ix][jx] + a.memory[ix][jx];
  
     return result; // вернуть сумму
 }
  
-Matrix Matrix::operator+= (const Matrix &right)
+Matrix Matrix::operator+= (const Matrix &a)
 {
-    if (size != right.size || memory->getSize() != right.getMemory()->getSize())
+    if (size != a.size || memory->getSize() != a.getMemory()->getSize())
     {
         cout << "Массивы разного размера!\n";
         exit(1); // завершить работу программы
@@ -170,14 +171,14 @@ Matrix Matrix::operator+= (const Matrix &right)
 //    Matrix result(size, memory->getSize());
     for (int ix = 0; ix < size; ix++)
         for (int jx = 0; jx < memory->getSize(); jx++)
-            memory[ix][jx] = memory[ix][jx] + right.memory[ix][jx];
+            memory[ix][jx] = memory[ix][jx] + a.memory[ix][jx];
  
     return *this; // вернуть сумму
 }
  
 Matrix Matrix::operator- (const Matrix &right)
 {
-    if (size != right.size || memory->getSize() != right.getMemory()->getSize())
+    if (size != a.size || memory->getSize() != a.getMemory()->getSize())
     {
         cout << "Массивы разного размера!\n";
         exit(1); // завершить работу программы
@@ -186,41 +187,41 @@ Matrix Matrix::operator- (const Matrix &right)
     Matrix result(size, memory->getSize());
     for (int ix = 0; ix < size; ix++)
         for (int jx = 0; jx < memory->getSize(); jx++)
-            result.memory[ix][jx] = memory[ix][jx] - right.memory[ix][jx];
+            result.memory[ix][jx] = memory[ix][jx] - a.memory[ix][jx];
  
     return result; // вернуть сумму
 }
  
-const Matrix &Matrix::operator= (const Matrix &right) // оператор присваивания
+const Matrix &Matrix::operator= (const Matrix &a) // оператор присваивания
 {
-    if (&right != this) // чтобы не выполнялось самоприсваивание
+    if (&a != this) // чтобы не выполнялось самоприсваивание
     {
-        if (size != right.size || memory->getSize() != right.getMemory()->getSize())
+        if (size != a.size || memory->getSize() != a.getMemory()->getSize())
         {
             delete [] memory; // освободить пространство
-            size = right.size; // установить нужный размер матрицы
+            size = a.size; // установить нужный размер матрицы
             memory = new Array [size]; // выделить память под копируемый массив
  
             for (int ix = 0; ix < size; ix++) // перераспределяем выделенную память
-                memory[ix].setSize(right.getMemory()->getSize()); // количество столбцов
+                memory[ix].setSize(a.getMemory()->getSize()); // количество столбцов
         }
  
         for (int ix = 0; ix < size; ix++)
             for (int jx = 0; jx < memory->getSize(); jx++)
-                memory[ix][jx] = right.memory[ix][jx]; // скопировать массив
+                memory[ix][jx] = a.memory[ix][jx]; // скопировать массив
     }
  
     return *this; // разрешает множественное присваивание, например x = t = e
 }
  
-bool Matrix::operator== (const Matrix &right) const// оператор сравнения
+bool Matrix::operator== (const Matrix &a) const// оператор сравнения
 {
-    if (size != right.size || memory->getSize() != right.getMemory()->getSize())
+    if (size != a.size || memory->getSize() != a.getMemory()->getSize())
         return false; // матрицы с разным количеством элементов
  
     for (int ix = 0; ix < size; ix++)
         for (int jx = 0; jx < memory->getSize(); jx++)
-            if (memory[ix][jx] != right.memory[ix][jx])
+            if (memory[ix][jx] != a.memory[ix][jx])
                 return false; // матрицы не равны
                 
     return true; // матрицы равны
