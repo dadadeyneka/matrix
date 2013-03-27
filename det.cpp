@@ -221,12 +221,6 @@ public:
         return res;
     }
 
-    /*
-     * повертає i-ий розмір матриці
-     * i.e. for i=1 the function returns the number of rows,
-     * and for i=2 the function returns the number of columns
-     * else the function returns 0
-     */
     int size(const int i)
     {
         if (i == 1)
@@ -304,25 +298,20 @@ private:
     double** p;         //вказівник на матрицю
 };
 
-/*
- * i.e. for i=1 the function returns the number of rows,
- * and for i=2 the function returns the number of columns
- * else the function returns 0
- */
 int size(Matrix& a, const int i)
 {
     return a.size(i);
 }
 
 
-// addition of Matrix with double
+//
 Matrix operator+ (const Matrix& a, const double b)
 {
     Matrix res = a;
     res.add(b);
     return res;
 }
-// addition of double with Matrix
+// 
 Matrix operator+ (const double b, const Matrix& a)
 {
     Matrix res = a;
@@ -330,14 +319,14 @@ Matrix operator+ (const double b, const Matrix& a)
     return res;
 }
 
-// subtraction of Matrix with double
+// 
 Matrix operator- (const Matrix& a, const double b)
 {
     Matrix res = a;
     res.subtract(b);
     return res;
 }
-// subtraction of double with Matrix
+// 
 Matrix operator- (const double b, const Matrix& a)
 {
     Matrix res = -a;
@@ -345,14 +334,14 @@ Matrix operator- (const double b, const Matrix& a)
     return res;
 }
 
-// multiplication of Matrix with double
+// 
 Matrix operator* (const Matrix& a, const double b)
 {
     Matrix res = a;
     res.multiply(b);
     return res;
 }
-// multiplication of double with Matrix
+// 
 Matrix operator* (const double b, const Matrix& a)
 {
     Matrix res = a;
@@ -384,60 +373,6 @@ Matrix ones(const int rows, const int cols)
 Matrix zeros(const int rows, const int cols)
 {
     return Matrix(rows, cols);
-}
-
-
-/**
- * returns a diagonal matrix with size n x n with ones at the diagonal
- * @param   v a vector
- * @return  a diagonal matrix with ones on the diagonal
- */
-Matrix diag(const int n)
-{
-    Matrix res = Matrix(n, n);
-    for (int i = 1; i <= n; i++)
-    {
-        res(i, i) = 1;
-    }
-    return res;
-}
-/**
- * returns a diagonal matrix
- * @param   v a vector
- * @return  a diagonal matrix with the given vector v on the diagonal
- */
-Matrix diag(Matrix& v)
-{
-    Matrix res;
-    if (v.get_cols() == 1)
-    {
-        // the given matrix is a vector n x 1
-        int rows = v.get_rows();
-        res = Matrix(rows, rows);
-
-        // copy the values of the vector to the matrix
-        for (int r=1; r <= rows; r++)
-        {
-            res(r, r) = v(r, 1);
-        }
-    }
-    else if (v.get_rows() == 1)
-    {
-        // the given matrix is a vector 1 x n
-        int cols = v.get_cols();
-        res = Matrix(cols, cols);
-
-        // copy the values of the vector to the matrix
-        for (int c=1; c <= cols; c++)
-        {
-            res(c, c) = v(1, c);
-        }
-    }
-    else
-    {
-        throw Exception("Parameter for diag must be a vector");
-    }
-    return res;
 }
 
 /*
@@ -544,7 +479,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        // adjust a value in the matrix  (indexes are one-based)
+        // присвоюємо значення матриці 
         A(2,1) = 1.23;
 
         // считує значення матриці
@@ -589,12 +524,6 @@ int main(int argc, char *argv[])
         C.print();
         printf("\n");
 
-        //створює діагональну матрицю
-        Matrix E = diag(B2);
-        printf("E = \n");
-        E.print();
-        printf("\n");
-
         // обчислює детермінант
         Matrix D = Matrix(2, 2);
         D(1,1) = 2;
@@ -637,11 +566,11 @@ int main(int argc, char *argv[])
     }
     catch (Exception err)
     {
-        printf("Error: %s\n", err.msg);
+        printf("Помилка: %s\n", err.msg);
     }
     catch (...)
     {
-        printf("An error occured...\n");
+        printf("Сталася помилка...\n");
     }
 
     printf("\n");
