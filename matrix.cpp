@@ -1,50 +1,9 @@
-//заголовочый код
-#ifndef MATRIX_H
-#define MATRIX_H
- 
-#include "array.h"
- 
-class Matrix
-{
-    friend ostream &operator<< (ostream &, const Matrix &); // перегруженный оператор вывода
-    friend istream &operator>> (istream &, Matrix &); // перегруженный оператор ввода
-private:
-    Array *memory; // указатель на матрицу типа Array
-    int size; // размер матрицы
- 
-public:
-    Matrix();// конструктор по умолчанию
-    Matrix(int, int ); // конструктор с параметрами
-    Matrix( Matrix &matrixToCopy ); // конструктор копии
-    ~Matrix(); // десструктор класса Matrix
- 
-    int getSize() const; // возвратить количество объектов типа Array
-    Array *getMemory() const; // вернуть указатель на объект типа Array
-    void setMatrix(); // заполнение матрицы
-    void getMatrix(); // вывод матрицы
-    Matrix operator+ (const Matrix &a);
-    Matrix operator+= (const Matrix &a);
-    Matrix operator- (const Matrix &a);
-    const Matrix &operator= (const Matrix &a); // оператор присваивания
-    bool operator== (const Matrix &a) const;// оператор сравнени
-    
-};
-#endif // MATRIX_H
-
-
-//исходный код
-#include "matrix.h"
- 
-#include "array.h"
- 
-#include <iostream>
-using std::cout; // пространство имен std для cout
-using std::cin; // пространство имен std для cin
- 
-#include <iomanip> // для манипулятора setw
-using std::setw;   // пространство имен std для setw
- 
 #include <cstdlib>
+#include <cstdio>
+#include <math.h>
+
+using namespace std;
+
  
 Matrix::Matrix() // конструктор по умолчанию
 {
