@@ -2,33 +2,41 @@
 #include <cstdio>
 #include <math.h>
 
-using namespace std;
-
 class Matrix
-{public: 
-Matrix()
-           p=NULL;
-           rows=0;
-           cols=0;
-           }
-Matrix(const int row_zm,const int col_zm)
-{ p = NULL;
+{
+public:
+    // конструктори
+    Matrix()
+    {
+        // створюємо матрицю без змісту
+        p = NULL;
+        rows = 0;
+        cols = 0;
+    }
+    Matrix(const int row_count, const int column_count)
+    {
+        // створюємо матрицю із заданим числом стовпців і рядків
+        p = NULL;
 
-        if (row_zm> 0 && column_zm > 0)
+        if (row_count > 0 && column_count > 0)
         {
-            rows = row_zm;
-            cols = column_zm;
+            rows = row_count;
+            cols = column_count;
 
             p = new double*[rows];
             for (int r = 0; r < rows; r++)
             {
-                p[r] = new double[rows];
+                p[r] = new double[cols];
 
                 // обнуляємо значення матриці
                 for (int c = 0; c < cols; c++)
                 {
                     p[r][c] = 0;
-// оператор присвоювання
+                }
+            }
+        }
+    }
+    // оператор присвоювання
     Matrix(const Matrix& a)
     {
         rows = a.rows;
@@ -38,15 +46,640 @@ Matrix(const int row_zm,const int col_zm)
         {
             p[r] = new double[a.cols];
 
-            // копіюємо значення матриці
+            //копіюємо значення з матриці А
             for (int c = 0; c < a.cols; c++)
             {
                 p[r][c] = a.p[r][c];
             }
         }
     }
-           
-}   
 
-      
+    // оператор для індексів значень матриці
+           double& operator()(const int r, const int c)
+	{
+      	if (p != NULL && r > 0 && r <= rows && c > 0 && c <= cols)
+      	{
+          	return p[r-1][c-1];
+        }
+      	else
+      	{
+            prinf("Індекс знаходиться за діапазоном матриці\n");
+        }
+    }
 
+    // оператор присвоювання
+    Matrix& operator= (const Matrix& a)
+    {
+        rows = a.rows;
+        cols = a.cols;
+        p = new double*[a.rows];
+        for (int r = 0; r < a.rows; r++)
+        {
+            p[r] = new double[a.cols];
+
+            //копіює значення з матриці А
+            for (int c = 0; c < a.cols; c++)
+            {
+                p[r][c] = a.p[r][c];
+            }
+        }
+        return *this;
+    }
+
+    // оператор суми
+    friend Matrix operator+(const Matrix& a, const Matrix& b)
+    {
+        // перевірка відповідності розмірів матриць
+        if (a.rows == b.rows && a.cols == b.cols)
+        {
+         	Matrix res(a.rows, a.cols);
+
+            for (int r = 0; r < a.rows; r++)
+            {
+                for (int c = 0; c < a.cols; c++)
+                {
+                    res.p[r][c] = a.p[r][c] + b.p[r][c];
+                }
+            }
+         	return res;
+        }
+        else
+        {
+            // помилка
+            printf("Розміри матриць не співпадають\n");
+        }
+        // повертає порожню матрицю
+        return Matrix();
+    }
+    // оператор віднімання
+    friend Matrix operator- (const Matrix& a, const Matrix& b)
+    {
+        // перевірка відповідності матриць
+        if (a.rows == b.rows && a.cols == b.cols)
+        {
+         	Matrix res(a.rows, a.cols);
+
+            for (int r = 0; r < a.rows; r++)
+            {
+                for (int c = 0; c < a.cols; c++)
+                {
+                    res.p[r][c] = a.p[r][c] - b.p[r][c];
+                }
+            }
+         	return res;
+        }
+        else
+        {
+            // помилка
+            printf("Розміри матриць не співпадають\n");
+        }
+    // оператор протилежного кожного значення матриці
+    friend Matrix operator- (const Matrix& a)
+    {
+     	Matrix res(a.rows, a.cols);
+
+        for (int r = 0; r < a.rows; r++)
+        {
+            for (int c = 0; c < a.cols; c++)
+            {
+                res.p[r][c] = -a.p[r][c];
+            }
+        }
+
+        return res;
+    }
+
+    // оператор множення
+    friend Matrix operator* (const Matrix& a, const Matrix& b)
+    {
+        // перевірка відповідності матриць
+        if (a.cols == b.rows)
+        {
+         	Matrix res(a.rows, b.cols);
+
+            for (int r = 0; r < a.rows; r++)
+            {
+                for (int c_res = 0; c_res < b.cols; c_res++)
+                {
+                    for (int c = 0; c < a.cols; c++)
+                    {
+                        res.p[r][c_res] += a.p[r][c] * b.p[c][c_res];
+                    }
+                }
+            }
+         	return res;
+        }
+        else
+        {
+            // помилка
+            printf("Розміри матриць не співпадають\n");
+        }
+        // повертає порожню матрицю
+        return Matrix();
+    }
+
+    //  повертає мінор матриці, де вибрані значення будуть видалені
+    Matrix Minor(const int row, const int col)
+    {
+        Matrix res;
+      	if (row > 0 && row <= rows && col > 0 && col <= cols)
+      	{
+            res = Matrix(rows - 1, cols - 1);
+
+            // скопіювати значення матриці до мінору, крім вибраних
+            for (int r = 1; r <= (rows - (row >= rows)); r++)
+            {
+                for (int c = 1; c <= (cols - (col >= cols)); c++)
+                {
+                    res(r - (r > row), c - (c > col)) = p[r-1][c-1];
+                }
+            }
+        }
+        else
+        {
+            printf("Індекс знаходиться за діапазоном матриці\n");
+        }
+
+        return res;
+    }
+
+    // повертає i-ий розмір матриці
+    //якщо i=1 функція повертає кількість рядків матриці,
+    // якщо i=1 функція повертає кількість стовпців матриці,
+    //в іншому випадку функція повертає 0
+    int Size(const int i)
+    {
+        if (i == 1)
+        {
+            return rows;
+        }
+        else if (i == 2)
+        {
+            return cols;
+        }
+        return 0;
+    }
+
+    // повертає кількість рядків матриці
+    int GetRows()
+    {
+        return rows;
+    }
+
+    //повертає кількість стовпців матриці
+    int GetCols()
+    {
+        return cols;
+    }
+
+    // виводить вміст матриці
+    void Print()
+    {
+        if (p != NULL)
+        {
+            printf("[");
+            for (int r = 0; r < rows; r++)
+            {
+                if (r > 0)
+                {
+                    printf(" ");
+                }
+                for (int c = 0; c < cols-1; c++)
+                {
+                    printf("%.2f, ", p[r][c]);
+                }
+                if (r < rows-1)
+                {
+                    printf("%.2f;\n", p[r][cols-1]);
+                }
+                else
+                {
+                    printf("%.2f]\n", p[r][cols-1]);
+                }
+            }
+        }
+        else
+        {
+            // порожня  матриця
+            printf("[ ]\n");
+        }
+    }
+
+public:
+    // деструктор
+    ~Matrix()
+    {
+        // очищає виділену память
+        for (int r = 0; r < rows; r++)
+        {
+            delete p[r];
+        }
+        delete p;
+        p = NULL;
+    }
+
+private:
+    int rows;
+    int cols;
+    double** p;         // pointer to a matrix with doubles
+};
+
+int Size(Matrix& a, const int i)
+{
+    return a.Size(i);
+}
+
+// addition of Matrix with double
+Matrix operator+ (const Matrix& a, const double b)
+{
+    Matrix res = a;
+    res.Add(b);
+    return res;
+}
+// addition of double with Matrix
+Matrix operator+ (const double b, const Matrix& a)
+{
+    Matrix res = a;
+    res.Add(b);
+    return res;
+}
+
+// subtraction of Matrix with double
+Matrix operator- (const Matrix& a, const double b)
+{
+    Matrix res = a;
+    res.Subtract(b);
+    return res;
+}
+// subtraction of double with Matrix
+Matrix operator- (const double b, const Matrix& a)
+{
+    Matrix res = -a;
+    res.Add(b);
+    return res;
+}
+
+// multiplication of Matrix with double
+Matrix operator* (const Matrix& a, const double b)
+{
+    Matrix res = a;
+    res.Multiply(b);
+    return res;
+}
+// multiplication of double with Matrix
+Matrix operator* (const double b, const Matrix& a)
+{
+    Matrix res = a;
+    res.Multiply(b);
+    return res;
+}
+
+
+/**
+ * returns a matrix with size cols x rows with ones as values
+ */
+Matrix Ones(const int rows, const int cols)
+{
+    Matrix res = Matrix(rows, cols);
+
+    for (int r = 1; r <= rows; r++)
+    {
+        for (int c = 1; c <= cols; c++)
+        {
+            res(r, c) = 1;
+        }
+    }
+    return res;
+}
+
+/**
+ * returns a matrix with size cols x rows with zeros as values
+ */
+Matrix Zeros(const int rows, const int cols)
+{
+    return Matrix(rows, cols);
+}
+
+Matrix Diag(const int n)
+{
+    Matrix res = Matrix(n, n);
+    for (int i = 1; i <= n; i++)
+    {
+        res(i, i) = 1;
+    }
+    return res;
+}
+Matrix Diag(Matrix& v)
+{
+    Matrix res;
+    if (v.GetCols() == 1)
+    {
+        // the given matrix is a vector n x 1
+        int rows = v.GetRows();
+        res = Matrix(rows, rows);
+
+        // copy the values of the vector to the matrix
+        for (int r=1; r <= rows; r++)
+        {
+            res(r, r) = v(r, 1);
+        }
+    }
+    else if (v.GetRows() == 1)
+    {
+        // the given matrix is a vector 1 x n
+        int cols = v.GetCols();
+        res = Matrix(cols, cols);
+
+        // copy the values of the vector to the matrix
+        for (int c=1; c <= cols; c++)
+        {
+            res(c, c) = v(1, c);
+        }
+    }
+    else
+    {
+        printf("Parameter for diag must be a vector\n");
+    }
+    return res;
+}
+
+/*
+ * returns the determinant of Matrix a
+ */
+double Det(Matrix& a)
+{
+    double d = 0;       // значення детермінанта
+    int rows = a.GetRows();
+    int cols = a.GetRows();
+
+    if (rows == cols)
+    {
+        // this is a square matrix
+        if (rows == 1)
+        {
+            // this is a 1 x 1 matrix
+            d = a(1, 1);
+        }
+        else if (rows == 2)
+        {
+            // this is a 2 x 2 matrix
+            // the determinant of [a11,a12;a21,a22] is det = a11*a22-a21*a12
+            d = a(1, 1) * a(2, 2) - a(2, 1) * a(1, 2);
+        }
+        else
+        {
+            // this is a matrix of 3 x 3 or larger
+            for (int c = 1; c <= cols; c++)
+            {
+                Matrix M = a.Minor(1, c);
+                //d += pow(-1, 1+c)  * a(1, c) * Det(M);
+                d += (c%2 + c%2 - 1) * a(1, c) * Det(M);  // faster than with pow()
+            }
+        }
+    }
+    else
+    {
+        printf("Matrix must be square\n");
+    }
+    return d;
+}
+
+// swap two values
+void Swap(double& a, double& B)
+{
+    double temp = a;
+    a = b;
+    b = temp;
+}
+
+/*
+ * returns the inverse of Matrix a
+ */
+Matrix Inv(Matrix& a)
+{
+    Matrix res;
+    double d = 0;       // value of the determinant
+    int rows = a.GetRows();
+    int cols = a.GetRows();
+
+    d = Det(a);
+    if (rows == cols && d != 0)
+    {
+        // this is a square matrix
+        if (rows == 1)
+        {
+            // this is a 1 x 1 matrix
+            res = Matrix(rows, cols);
+            res(1, 1) = 1 / a(1, 1);
+        }
+        else if (rows == 2)
+        {
+            // this is a 2 x 2 matrix
+            res = Matrix(rows, cols);
+            res(1, 1) = a(2, 2);
+            res(1, 2) = -a(1, 2);
+            res(2, 1) = -a(2, 1);
+            res(2, 2) = a(1, 1);
+            res = (1/d) * res;
+        }
+        else
+        {
+            // this is a matrix of 3 x 3 or larger
+            // calculate inverse using gauss-jordan elimination
+            res = Diag(rows);     // a diagonal matrix with ones at the diagonal
+            Matrix ai = a;        // make a copy of Matrix a
+
+            for (int c = 1; c <= cols; c++)
+            {
+                // element (c, c) should be non zero. if not, swap content
+                // of lower rows
+                int r;
+                for (r = c; r <= rows && ai(r, c) == 0; r++)
+                {
+                }
+                if (r != c)
+                {
+                    // swap rows
+                    for (int s = 1; s <= cols; s++)
+                    {
+                        Swap(ai(c, s), ai(r, s));
+                        Swap(res(c, s), res(r, s));
+                    }
+                }
+
+                // eliminate non-zero values on the other rows at column c
+                for (int r = 1; r <= rows; r++)
+                {
+                    if(r != c)
+                    {
+                        // eleminate value at column c and row r
+                        if (ai(r, c) != 0)
+                        {
+                            double f = - ai(r, c) / ai(c, c);
+
+                            // add (f * row c) to row r to eleminate the value
+                            // at column c
+                            for (int s = 1; s <= cols; s++)
+                            {
+                                ai(r, s) += f * ai(c, s);
+                                res(r, s) += f * res(c, s);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // make value at (c, c) one,
+                        // divide each value on row r with the value at ai(c,c)
+                        double f = ai(c, c);
+                        for (int s = 1; s <= cols; s++)
+                        {
+                            ai(r, s) /= f;
+                            res(r, s) /= f;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        if (rows == cols)
+        {
+            printf("Matrix must be square\n");
+        }
+        else
+        {
+            printf("Determinant of matrix is zero\n");
+        }
+    }
+    return res;
+}
+
+
+int main(int argc, char *argv[])
+{
+        // create an empty matrix of 3x3 (will initially contain zeros)
+        int cols = 3;
+        int rows = 3;
+        Matrix A = Matrix(cols, rows);
+
+        // fill in some values in matrix a
+        int count = 0;
+        for (int r = 1; r <= rows; r++)
+        {
+            for (int c = 1; c <= cols; c++)
+            {
+                count ++;
+                A(r, c) = count;
+            }
+        }
+
+        // adjust a value in the matrix  (indexes are one-based)
+        A(2,1) = 1.23;
+
+        // read a value from the matrix  (indexes are one-based)
+        double centervalue = A(2,2);
+        printf("centervalue = %f \n", centervalue);
+        printf("\n");
+
+        // виводить матрицю
+        printf("A = \n");
+        A.Print();
+        printf("\n");
+
+        Matrix B = Ones(rows, cols) + Diag(rows);
+        printf("B = \n");
+        B.Print();
+        printf("\n");
+
+        Matrix B2 = Matrix(rows, 1);        // a vector
+        count = 1;
+        for (int r = 1; r <= rows; r++)
+        {
+            count ++;
+            B2(r, 1) = count * 2;
+        }
+        printf("B2 = \n");
+        B2.Print();
+        printf("\n");
+
+        Matrix C;
+        C = A + B;
+        printf("A + B = \n");
+        C.Print();
+        printf("\n");
+
+        C = A - B;
+        printf("A - B = \n");
+        C.Print();
+        printf("\n");
+
+        C = A * B2;
+        printf("A * B2 = \n");
+        C.Print();
+        printf("\n");
+
+        // create a diagonal matrix
+        Matrix E = Diag(B2);
+        printf("E = \n");
+        E.Print();
+        printf("\n");
+
+        // обчислює детермінант
+        Matrix D = Matrix(2, 2);
+        D(1,1) = 2;
+        D(1,2) = 4;
+        D(2,1) = 1;
+        D(2,2) = -2;
+        printf("D = \n");
+        D.Print();
+        printf("Det(D) = %f\n\n", Det(D));
+
+        printf("A = \n");
+        A.Print();
+        printf("\n");
+        printf("Det(A) = %f\n\n", Det(A));
+
+        Matrix F;
+        F = 3 - A ;
+        printf("3 - A = \n");
+        F.Print();
+        printf("\n");
+
+        // test inverse
+        Matrix G = Matrix(2, 2);
+        G(1, 1) = 1;
+        G(1, 2) = 2;
+        G(2, 1) = 3;
+        G(2, 2) = 4;
+        printf("G = \n");
+        G.Print();
+        printf("\n");
+        Matrix G_inv = Inv(G);
+        printf("Inv(G) = \n");
+        G_inv.Print();
+        printf("\n");
+
+        Matrix A_inv = Inv(A);
+        printf("Inv(A) = \n");
+        A_inv.Print();
+        printf("\n");
+
+        rows = 2;
+        cols = 5;
+        Matrix H = Matrix(rows, cols);
+        for (int r = 1; r <= rows; r++)
+        {
+            for (int c = 1; c <= cols; c++)
+            {
+                count ++;
+                H(r, c) = count;
+            }
+        }
+        printf("H = \n");
+        H.Print();
+        printf("\n");
+    }
+    PAUSE;
+    return EXIT_SUCCESS;
+}
