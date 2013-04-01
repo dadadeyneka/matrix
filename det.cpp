@@ -432,20 +432,19 @@ double Det(Matrix& a)
             for (int c = 1; c <= cols; c++)
             {
                 Matrix M = a.Minor(1, c);
-                //d += pow(-1, 1+c)  * a(1, c) * Det(M);
-                d += (c%2 + c%2 - 1) * a(1, c) * Det(M);  // faster than with pow()
+                d += pow(-1, 1+c)  * a(1, c) * Det(M);
             }
         }
     }
     else
     {
-        printf("Matrix must be square\n");
+        printf("Матриця повинна бути квадратною\n");
     }
     return d;
 }
 
-// swap two values
-void Swap(double& a, double& B)
+// міняє 2 значення
+void Swap(double& a, double& b)
 {
     double temp = a;
     a = b;
@@ -453,28 +452,28 @@ void Swap(double& a, double& B)
 }
 
 /*
- * returns the inverse of Matrix a
+ * повертає обернену матрицю
  */
 Matrix Inv(Matrix& a)
 {
     Matrix res;
-    double d = 0;       // value of the determinant
+    double d = 0;       // значення детермінанта
     int rows = a.GetRows();
     int cols = a.GetRows();
 
     d = Det(a);
     if (rows == cols && d != 0)
     {
-        // this is a square matrix
+        // для квадратної матриці
         if (rows == 1)
         {
-            // this is a 1 x 1 matrix
+            // для матриці 1 x 1
             res = Matrix(rows, cols);
             res(1, 1) = 1 / a(1, 1);
         }
         else if (rows == 2)
         {
-            // this is a 2 x 2 matrix
+            // для матриці 2 x 2 
             res = Matrix(rows, cols);
             res(1, 1) = a(2, 2);
             res(1, 2) = -a(1, 2);
@@ -499,7 +498,7 @@ Matrix Inv(Matrix& a)
                 }
                 if (r != c)
                 {
-                    // swap rows
+                    // міняє рядки
                     for (int s = 1; s <= cols; s++)
                     {
                         Swap(ai(c, s), ai(r, s));
@@ -545,11 +544,11 @@ Matrix Inv(Matrix& a)
     {
         if (rows == cols)
         {
-            printf("Matrix must be square\n");
+            printf("Матриця повинна бути квадратною\n");
         }
         else
         {
-            printf("Determinant of matrix is zero\n");
+            printf("Детермінант матриці дорівнює 0\n");
         }
     }
     return res;
@@ -558,7 +557,7 @@ Matrix Inv(Matrix& a)
 
 int main(int argc, char *argv[])
 {
-        // create an empty matrix of 3x3 (will initially contain zeros)
+        // створюємо матрицю 3x3 (will initially contain zeros)
         int cols = 3;
         int rows = 3;
         Matrix A = Matrix(cols, rows);
@@ -592,7 +591,7 @@ int main(int argc, char *argv[])
         B.Print();
         printf("\n");
 
-        Matrix B2 = Matrix(rows, 1);        // a vector
+        Matrix B2 = Matrix(rows, 1);        // вектор
         count = 1;
         for (int r = 1; r <= rows; r++)
         {
@@ -619,7 +618,7 @@ int main(int argc, char *argv[])
         C.Print();
         printf("\n");
 
-        // create a diagonal matrix
+        // створюємо діагональну матрицю
         Matrix E = Diag(B2);
         printf("E = \n");
         E.Print();
@@ -646,7 +645,7 @@ int main(int argc, char *argv[])
         F.Print();
         printf("\n");
 
-        // test inverse
+        // для оберненої матриці
         Matrix G = Matrix(2, 2);
         G(1, 1) = 1;
         G(1, 2) = 2;
