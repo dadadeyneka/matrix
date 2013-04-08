@@ -148,11 +148,6 @@ public:
 
         return res;
     }
-    else
-        {
-            // помилка
-            printf("Розміри матриць не співпадають\n");
-        }
 
     // оператор множення
     friend Matrix operator* (const Matrix& a, const Matrix& b)
@@ -283,65 +278,9 @@ public:
         p = NULL;
     }
 
-private:
-    int rows;
-    int cols;
-    double** p;         // pointer to a matrix with doubles
-};
-
-int Size(Matrix& a, const int i)
-{
-    return a.Size(i);
-}
-
-// addition of Matrix with double
-Matrix operator+ (const Matrix& a, const double b)
-{
-    Matrix res = a;
-    res.Add(b);
-    return res;
-}
-// addition of double with Matrix
-Matrix operator+ (const double b, const Matrix& a)
-{
-    Matrix res = a;
-    res.Add(b);
-    return res;
-}
-
-// subtraction of Matrix with double
-Matrix operator- (const Matrix& a, const double b)
-{
-    Matrix res = a;
-    res.Subtract(b);
-    return res;
-}
-// subtraction of double with Matrix
-Matrix operator- (const double b, const Matrix& a)
-{
-    Matrix res = -a;
-    res.Add(b);
-    return res;
-}
-
-// multiplication of Matrix with double
-Matrix operator* (const Matrix& a, const double b)
-{
-    Matrix res = a;
-    res.Multiply(b);
-    return res;
-}
-// multiplication of double with Matrix
-Matrix operator* (const double b, const Matrix& a)
-{
-    Matrix res = a;
-    res.Multiply(b);
-    return res;
-}
-
 
 /**
- * returns a matrix with size cols x rows with ones as values
+ * повертає матрицю розміром cols x rows з значеннями одиниця
  */
 Matrix Ones(const int rows, const int cols)
 {
@@ -358,7 +297,7 @@ Matrix Ones(const int rows, const int cols)
 }
 
 /**
- * returns a matrix with size cols x rows with zeros as values
+ * повертає матрицю розміром cols x rows з значеннями 0
  */
 Matrix Zeros(const int rows, const int cols)
 {
@@ -379,11 +318,11 @@ Matrix Diag(Matrix& v)
     Matrix res;
     if (v.GetCols() == 1)
     {
-        // the given matrix is a vector n x 1
+        // отримана матриця є вектором n x 1
         int rows = v.GetRows();
         res = Matrix(rows, rows);
 
-        // copy the values of the vector to the matrix
+        //копіюємо значення вектора до матриці
         for (int r=1; r <= rows; r++)
         {
             res(r, r) = v(r, 1);
@@ -391,11 +330,11 @@ Matrix Diag(Matrix& v)
     }
     else if (v.GetRows() == 1)
     {
-        // the given matrix is a vector 1 x n
+        // отримана матриця є вектором 1 x n
         int cols = v.GetCols();
         res = Matrix(cols, cols);
 
-        // copy the values of the vector to the matrix
+        // копіюємо значення вектора до матриці
         for (int c=1; c <= cols; c++)
         {
             res(c, c) = v(1, c);
@@ -403,13 +342,13 @@ Matrix Diag(Matrix& v)
     }
     else
     {
-        printf("Parameter for diag must be a vector\n");
+        printf("Параметр для діагоналі має бути вектор\n");
     }
     return res;
 }
 
 /*
- * returns the determinant of Matrix a
+ * повертає детермінант матриці А
  */
 double Det(Matrix& a)
 {
@@ -419,21 +358,20 @@ double Det(Matrix& a)
 
     if (rows == cols)
     {
-        // this is a square matrix
+        // для квадратної матриці
         if (rows == 1)
         {
-            // this is a 1 x 1 matrix
+            // для матриці 1 x 1
             d = a(1, 1);
         }
         else if (rows == 2)
         {
-            // this is a 2 x 2 matrix
-            // the determinant of [a11,a12;a21,a22] is det = a11*a22-a21*a12
+            // для матриці 2 x 2 
             d = a(1, 1) * a(2, 2) - a(2, 1) * a(1, 2);
         }
         else
         {
-            // this is a matrix of 3 x 3 or larger
+            // для матриці3 x 3 або більше
             for (int c = 1; c <= cols; c++)
             {
                 Matrix M = a.Minor(1, c);
@@ -448,7 +386,7 @@ double Det(Matrix& a)
     return d;
 }
 
-// міняє 2 значення
+// міняє 2 значення місцями
 void Swap(double& a, double& b)
 {
     double temp = a;
@@ -488,63 +426,7 @@ Matrix Inv(Matrix& a)
         }
         else
         {
-            // this is a matrix of 3 x 3 or larger
-            // calculate inverse using gauss-jordan elimination
-            res = Diag(rows);     // a diagonal matrix with ones at the diagonal
-            Matrix ai = a;        // make a copy of Matrix a
-
-            for (int c = 1; c <= cols; c++)
-            {
-                // element (c, c) should be non zero. if not, swap content
-                // of lower rows
-                int r;
-                for (r = c; r <= rows && ai(r, c) == 0; r++)
-                {
-                }
-                if (r != c)
-                {
-                    // міняє рядки
-                    for (int s = 1; s <= cols; s++)
-                    {
-                        Swap(ai(c, s), ai(r, s));
-                        Swap(res(c, s), res(r, s));
-                    }
-                }
-
-                // eliminate non-zero values on the other rows at column c
-                for (int r = 1; r <= rows; r++)
-                {
-                    if(r != c)
-                    {
-                        // eleminate value at column c and row r
-                        if (ai(r, c) != 0)
-                        {
-                            double f = - ai(r, c) / ai(c, c);
-
-                            // add (f * row c) to row r to eleminate the value
-                            // at column c
-                            for (int s = 1; s <= cols; s++)
-                            {
-                                ai(r, s) += f * ai(c, s);
-                                res(r, s) += f * res(c, s);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // make value at (c, c) one,
-                        // divide each value on row r with the value at ai(c,c)
-                        double f = ai(c, c);
-                        for (int s = 1; s <= cols; s++)
-                        {
-                            ai(r, s) /= f;
-                            res(r, s) /= f;
-                        }
-                    }
-                }
-            }
-        }
-    }
+           
     else
     {
         if (rows == cols)
@@ -562,12 +444,12 @@ Matrix Inv(Matrix& a)
 
 int main(int argc, char *argv[])
 {
-        // створюємо матрицю 3x3 (will initially contain zeros)
+        // створюємо матрицю 3x3 (з значеннями 0)
         int cols = 3;
         int rows = 3;
         Matrix A = Matrix(cols, rows);
 
-        // fill in some values in matrix a
+        // надаємо деякого значення матриці А
         int count = 0;
         for (int r = 1; r <= rows; r++)
         {
@@ -577,15 +459,6 @@ int main(int argc, char *argv[])
                 A(r, c) = count;
             }
         }
-
-        // adjust a value in the matrix  (indexes are one-based)
-        A(2,1) = 1.23;
-
-        // read a value from the matrix  (indexes are one-based)
-        double centervalue = A(2,2);
-        printf("centervalue = %f \n", centervalue);
-        printf("\n");
-
         // виводить матрицю
         printf("A = \n");
         A.Print();
