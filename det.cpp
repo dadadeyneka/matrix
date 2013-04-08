@@ -148,6 +148,11 @@ public:
 
         return res;
     }
+    else
+        {
+            // помилка
+            printf("Розміри матриць не співпадають\n");
+        }
 
     // оператор множення
     friend Matrix operator* (const Matrix& a, const Matrix& b)
