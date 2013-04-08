@@ -354,7 +354,7 @@ double Det(Matrix& a)
 {
     double d = 0;       // значення детермінанта
     int rows = a.GetRows();
-    int cols = a.GetRows();
+    int cols = a.GetCols();
 
     if (rows == cols)
     {
@@ -426,7 +426,9 @@ Matrix Inv(Matrix& a)
         }
         else
         {
-           
+        //для матриці 3 x 3 або більше
+         Matrix ai = a;        //робить копію матриці А
+         res=  
     else
     {
         if (rows == cols)
