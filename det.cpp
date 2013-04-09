@@ -279,73 +279,6 @@ public:
     }
 
 
-/**
- * повертає матрицю розміром cols x rows з значеннями одиниця
- */
-Matrix Ones(const int rows, const int cols)
-{
-    Matrix res = Matrix(rows, cols);
-
-    for (int r = 1; r <= rows; r++)
-    {
-        for (int c = 1; c <= cols; c++)
-        {
-            res(r, c) = 1;
-        }
-    }
-    return res;
-}
-
-/**
- * повертає матрицю розміром cols x rows з значеннями 0
- */
-Matrix Zeros(const int rows, const int cols)
-{
-    return Matrix(rows, cols);
-}
-
-Matrix Diag(const int n)
-{
-    Matrix res = Matrix(n, n);
-    for (int i = 1; i <= n; i++)
-    {
-        res(i, i) = 1;
-    }
-    return res;
-}
-Matrix Diag(Matrix& v)
-{
-    Matrix res;
-    if (v.GetCols() == 1)
-    {
-        // отримана матриця є вектором n x 1
-        int rows = v.GetRows();
-        res = Matrix(rows, rows);
-
-        //копіюємо значення вектора до матриці
-        for (int r=1; r <= rows; r++)
-        {
-            res(r, r) = v(r, 1);
-        }
-    }
-    else if (v.GetRows() == 1)
-    {
-        // отримана матриця є вектором 1 x n
-        int cols = v.GetCols();
-        res = Matrix(cols, cols);
-
-        // копіюємо значення вектора до матриці
-        for (int c=1; c <= cols; c++)
-        {
-            res(c, c) = v(1, c);
-        }
-    }
-    else
-    {
-        printf("Параметр для діагоналі має бути вектор\n");
-    }
-    return res;
-}
 
 /*
  * повертає детермінант матриці А
@@ -386,12 +319,19 @@ double Det(Matrix& a)
     return d;
 }
 
-// міняє 2 значення місцями
-void Swap(double& a, double& b)
-{
-    double temp = a;
-    a = b;
-    b = temp;
+void Transp(Matrix& a)// транспонування матриці
+double temp;
+int rows = a.GetRows();
+int cols = a.GetCols();
+    for (int r = 0; r < rows; r++)
+    {
+      for (int c = 0; c < cols; c++)
+      {
+      temp = p[r][c];
+      p[r][c] = p[c][r];
+      p[c][r] = temp;
+      }
+    }
 }
 
 /*
@@ -402,7 +342,7 @@ Matrix Inv(Matrix& a)
     Matrix res;
     double d = 0;       // значення детермінанта
     int rows = a.GetRows();
-    int cols = a.GetRows();
+    int cols = a.GetCols();
 
     d = Det(a);
     if (rows == cols && d != 0)
@@ -414,21 +354,18 @@ Matrix Inv(Matrix& a)
             res = Matrix(rows, cols);
             res(1, 1) = 1 / a(1, 1);
         }
-        else if (rows == 2)
+        else 
         {
-            // для матриці 2 x 2 
-            res = Matrix(rows, cols);
-            res(1, 1) = a(2, 2);
-            res(1, 2) = -a(1, 2);
-            res(2, 1) = -a(2, 1);
-            res(2, 2) = a(1, 1);
-            res = (1/d) * res;
-        }
-        else
-        {
-        //для матриці 3 x 3 або більше
+        //для матриці2 x 2 або більше
          Matrix ai = a;        //робить копію матриці А
-         res=  
+         int res;
+          for (int c = 1; c <= cols; c++)
+                Matrix M = a.minor(1, c);
+                 res= pow(-1, 1+c)  * a(1, c);
+                    // транспонує матрицю
+                    res=a.Transp(res)
+                    
+                }
     else
     {
         if (rows == cols)
@@ -461,25 +398,15 @@ int main(int argc, char *argv[])
                 A(r, c) = count;
             }
         }
+         // присвоює значення за індексом
+        A(2,1) = 4.33;
+          // зчитує значення за індексом
+        double value = A(1,2);
+        printf("Znachennya = %f \n", value);
+        printf("\n");
         // виводить матрицю
         printf("A = \n");
         A.Print();
-        printf("\n");
-
-        Matrix B = Ones(rows, cols) + Diag(rows);
-        printf("B = \n");
-        B.Print();
-        printf("\n");
-
-        Matrix B2 = Matrix(rows, 1);        // вектор
-        count = 1;
-        for (int r = 1; r <= rows; r++)
-        {
-            count ++;
-            B2(r, 1) = count * 2;
-        }
-        printf("B2 = \n");
-        B2.Print();
         printf("\n");
 
         Matrix C;
@@ -493,15 +420,9 @@ int main(int argc, char *argv[])
         C.Print();
         printf("\n");
 
-        C = A * B2;
+        C = A * B;
         printf("A * B2 = \n");
         C.Print();
-        printf("\n");
-
-        // створюємо діагональну матрицю
-        Matrix E = Diag(B2);
-        printf("E = \n");
-        E.Print();
         printf("\n");
 
         // обчислює детермінант
@@ -518,12 +439,6 @@ int main(int argc, char *argv[])
         A.Print();
         printf("\n");
         printf("Det(A) = %f\n\n", Det(A));
-
-        Matrix F;
-        F = 3 - A ;
-        printf("3 - A = \n");
-        F.Print();
-        printf("\n");
 
         // для оберненої матриці
         Matrix G = Matrix(2, 2);
