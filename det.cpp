@@ -1,6 +1,10 @@
 #include <cstdlib>
 #include <cstdio>
 #include <math.h>
+#include <iostream>
+
+using namespace std;
+using std::printf;
 
 class Matrix
 {
@@ -327,9 +331,9 @@ int cols = a.GetCols();
     {
       for (int c = 0; c < cols; c++)
       {
-      temp = p[r][c];
-      p[r][c] = p[c][r];
-      p[c][r] = temp;
+      temp = a.p[r][c];
+      a.p[r][c] = a.p[c][r];
+      a.p[c][r] = temp;
       }
     }
 }
@@ -356,16 +360,18 @@ Matrix Inv(Matrix& a)
         }
         else 
         {
-        //для матриці2 x 2 або більше
+        //для матриці 2 x 2 ш більше
          Matrix ai = a;        //робить копію матриці А
          int res;
-          for (int c = 1; c <= cols; c++)
-                Matrix M = a.minor(1, c);
-                 res= pow(-1, 1+c)  * a(1, c);
-                    // транспонує матрицю
-                    res=a.Transp(res)
-                    
+          for (int r = 1; r <= rows; r++)
+             { for (int c = 1; c <= cols; c++)
+               { Matrix M = a.minor(r, c);
+                 res= pow(-1, r+c)  * a(r, c);
+                    res[r][c]=a.Transp(res);
+                    d=Det(ai);
+                    p[r][c]=res[r][c]/d;
                 }
+         }
     else
     {
         if (rows == cols)
@@ -439,41 +445,6 @@ int main(int argc, char *argv[])
         A.Print();
         printf("\n");
         printf("Det(A) = %f\n\n", Det(A));
-
-        // для оберненої матриці
-        Matrix G = Matrix(2, 2);
-        G(1, 1) = 1;
-        G(1, 2) = 2;
-        G(2, 1) = 3;
-        G(2, 2) = 4;
-        printf("G = \n");
-        G.Print();
-        printf("\n");
-        Matrix G_inv = Inv(G);
-        printf("Inv(G) = \n");
-        G_inv.Print();
-        printf("\n");
-
-        Matrix A_inv = Inv(A);
-        printf("Inv(A) = \n");
-        A_inv.Print();
-        printf("\n");
-
-        rows = 2;
-        cols = 5;
-        Matrix H = Matrix(rows, cols);
-        for (int r = 1; r <= rows; r++)
-        {
-            for (int c = 1; c <= cols; c++)
-            {
-                count ++;
-                H(r, c) = count;
-            }
-        }
-        printf("H = \n");
-        H.Print();
-        printf("\n");
-    }
     PAUSE;
     return EXIT_SUCCESS;
 }
