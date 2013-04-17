@@ -7,10 +7,10 @@ using namespace std;
 class Matrix
 {
 public:
-    //  êîíñòðóêòîðè
+    //  конструктори
     Matrix()
     {
-        //ñòâîðþºìî ìàòðèöþ áåç çì³ñòó
+        // ñòâîðþºìî ìàòðèöþ áåç çì³ñòó
         p = NULL;
         rows = 0;
         cols = 0;
@@ -437,31 +437,35 @@ double Det(Matrix& a)
 Matrix inv(Matrix& a)
 {
     Matrix res;
-    double d = 0;       //çíà÷åííÿ äåòåðì³íàíòà
+    double d = 0;       //???????? ????????????
     int rows = a.GetRows();
     int cols = a.GetCols();
 
     d = Det(a);
     if (rows == cols && d != 0)
     {
-        // äëÿ êâàäðàòíî¿ ìàòðèö³
+        // ??? ?????????? ???????
         if (rows == 1)
         {
-            // äëÿ ìàòðèö³ 1 x 1 
+            // ??? ??????? 1 x 1 
             res = Matrix(rows, cols);
             res(1, 1) = 1 / a(1, 1);
         }
         else
         {
-            // äëÿ ìàòðèö³ 3 x 3 àáî á³ëüøå
-            Matrix ai = a;        // êîï³þº çíà÷åííÿ ìàòðèö³ À
+            // ??? ??????? 3 x 3 ??? ??????
+            Matrix ai = a;        // ?????? ???????? ??????? ?
             int res;
-      for (int c = 1; c <= cols; c++)
-                Matrix M = a.Minor(1, c);
-                    // òðàíñïîðòóº çíà÷åííÿ ìàòðèö³
-                    res=a.Transp(int Matrix M)
+      for (int r = 1; r <= rows; r++)
+      {for (int c = 1; c <= cols; c++)
+                Matrix M = a.Minor(r,c);
+                res(r,c)=pow(-1, r+c)*Det(M);
+                    // ??????????? ???????? ???????
+                    res=a.Transp(res)/Det(ai);
                 }
-
+      }
+      return res;
+}
 
 
 int main(int argc, char *argv[])
