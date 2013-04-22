@@ -10,14 +10,14 @@ public:
     //  конструктори
     Matrix()
     {
-        // ñòâîðþºìî ìàòðèöþ áåç çì³ñòó
+        // створюємо матрицю без вмісту
         p = NULL;
         rows = 0;
         cols = 0;
     }
     Matrix(const int row_count, const int column_count)
     {
-        // ñòâîðþºìî ìàòðèöþ ³ç çàäàíèì ÷èñëîì ñòîâïö³â ³ ðÿäê³â
+        // ñстворюємо матрицю із заданим числом стовпчиків і рядків
         p = NULL;
 
         if (row_count > 0 && column_count > 0)
@@ -30,7 +30,7 @@ public:
             {
                 p[r] = new double[cols];
 
-                // îáíóëÿºìî çíà÷åííÿ ìàòðèö³
+                // обнуляємо значення матриці
                 for (int c = 0; c < cols; c++)
                 {
                     p[r][c] = 0;
@@ -38,7 +38,7 @@ public:
             }
         }
     }
-    // îïåðàòîð ïðèñâîþâàííÿ
+    // оператор присвоювання
     Matrix(const Matrix& a)
     {
         rows = a.rows;
@@ -48,7 +48,7 @@ public:
         {
             p[r] = new double[a.cols];
 
-            // êîï³þºìî çíà÷åííÿ ç ìàòðèö³ À
+            // копіюємо значення з матриці А
             for (int c = 0; c < a.cols; c++)
             {
                 p[r][c] = a.p[r][c];
@@ -56,7 +56,7 @@ public:
         }
     }
 
-    // îïåðàòîð äëÿ ³íäåêñ³â çíà÷åíü ìàòðèö³
+    // опеатор для індексів значень матриці
 	double& operator()(const int r, const int c)
 	{
       	if (p != NULL && r > 0 && r <= rows && c > 0 && c <= cols)
@@ -65,11 +65,11 @@ public:
         }
       	else
       	{
-             printf("²íäåêñ çíàõîäèòüñÿ çà ä³àïàçîíîì ìàòðèö³\n");
+             printf("Індекс матриці знаходиться поза діапазоном\n");
         }
     }
 
-    // îïåðàòîð ïðèñâîþâàííÿ
+    // оператор присвоювання значень елементам матриці
     Matrix& operator= (const Matrix& a)
     {
         rows = a.rows;
@@ -79,7 +79,7 @@ public:
         {
             p[r] = new double[a.cols];
 
-            // êîï³þº çíà÷åííÿ ç ìàòðèö³ À
+            // копіюємо значення з матриці А
             for (int c = 0; c < a.cols; c++)
             {
                 p[r][c] = a.p[r][c];
@@ -88,10 +88,10 @@ public:
         return *this;
     }
 
-    // îïåðàòîð ñóìè
+    // оператор суми
     friend Matrix operator+(const Matrix& a, const Matrix& b)
     {
-        // ïåðåâ³ðêà â³äïîâ³äíîñò³ ðîçì³ð³â ìàòðèöü
+        // перевірка відповідності розмірів матриць
         if (a.rows == b.rows && a.cols == b.cols)
         {
          	Matrix res(a.rows, a.cols);
@@ -107,18 +107,18 @@ public:
         }
         else
         {
-            // ïîìèëêà
-            printf("Ðîçì³ðè ìàòðèöü íå ñï³âïàäàþòü\n");
+            // помилка
+            printf("Розміри матриць не співпадають\n");
         }
 
-        // ïîâåðòàº ïîðîæíþ ìàòðèöþ
+        // повертає порожню матрицю
         return Matrix();
     }
 
-    // îïåðàòîð â³äí³ìàííÿ
+    // оператор різниці
     friend Matrix operator- (const Matrix& a, const Matrix& b)
     {
-        // ïåðåâ³ðêà â³äïîâ³äíîñò³ ìàòðèöü
+        // перевірка відповідності матриць
         if (a.rows == b.rows && a.cols == b.cols)
         {
          	Matrix res(a.rows, a.cols);
@@ -134,14 +134,14 @@ public:
         }
         else
         {
-            // ïîìèëêà
-           printf("Ðîçì³ðè ìàòðèöü íå ñï³âïàäàþòü\n");
+            // помилка
+           printf("Розміри матриць не співпадають\n");
         }
 
-        // ïîâåðòàº ïîðîæíþ ìàòðèöþ
+        // повертає порожню матрицю
         return Matrix();
     }
-    // îïåðàòîð ïðîòèëåæíîãî êîæíîãî çíà÷åííÿ ìàòðèö³
+    // оператор протилежного знаку кожного елемента матриці
     friend Matrix operator- (const Matrix& a)
     {
      	Matrix res(a.rows, a.cols);
@@ -157,10 +157,10 @@ public:
         return res;
     }
 
-    // îïåðàòîð ìíîæåííÿ
+    // оператор добутку
     friend Matrix operator* (const Matrix& a, const Matrix& b)
     {
-        // ïåðåâ³ðêà â³äïîâ³äíîñò³ ìàòðèöü
+        // перевірка відповідності матриць
         if (a.cols == b.rows)
         {
          	Matrix res(a.rows, b.cols);
@@ -179,15 +179,15 @@ public:
         }
         else
         {
-            // ïîìèëêà
-            printf("Ðîçì³ðè ìàòðèöü íå ñï³âïàäàþòü\n");
+            // помилка
+            printf("Розміри матриць не співпадають\n");
         }
 
-        //  ïîâåðòàº ïîðîæíþ ìàòðèöþ
+        //  повертає порожню матрицю
         return Matrix();
     }
 
-    //ïîâåðòàº ì³íîð ìàòðèö³, äå âèáðàí³ çíà÷åííÿ áóäóòü âèäàëåí³
+    // повертає мінор матриці, де вибрані елементи будуть видалені
     Matrix Minor(const int row, const int col)
     {
         Matrix res;
@@ -195,28 +195,27 @@ public:
       	{
             res = Matrix(rows - 1, cols - 1);
 
-            // ñêîï³þâàòè çíà÷åííÿ ìàòðèö³ äî ì³íîðó, êð³ì âèáðàíèõ
+            // скопіюємо значення  матриці
             for (int r = 1; r <= (rows - (row >= rows)); r++)
             {
                 for (int c = 1; c <= (cols - (col >= cols)); c++)
                 {
-                    //printf("r=%i, c=%i, value=%f, rr=%i, cc=%i \n", r, c, p[r-1][c-1], r - (r > row), c - (c > col));
                     res(r - (r > row), c - (c > col)) = p[r-1][c-1];
                 }
             }
         }
         else
         {
-           printf("²íäåêñ çíàõîäèòüñÿ çà ä³àïàçîíîì ìàòðèö³\n");
+           printf(" Індекс знаходиться поза діапазоном матриці\n");
         }
 
         return res;
     }
 
-    // ïîâåðòàº i-èé ðîçì³ð ìàòðèö³
-    //ÿêùî i=1 ôóíêö³ÿ ïîâåðòàº ê³ëüê³ñòü ðÿäê³â ìàòðèö³,
-    // ÿêùî i=1 ôóíêö³ÿ ïîâåðòàº ê³ëüê³ñòü ñòîâïö³â ìàòðèö³,
-    //â ³íøîìó âèïàäêó ôóíêö³ÿ ïîâåðòàº 0
+    // повертає і-ий розмір матриці
+    // якщо і=1 функція повертає кількість рядків
+    // якщо і=2 функція повертає кількість стовпців
+    // в іншому випадку функція повертає 0
     int Size(const int i)
     {
         if (i == 1)
@@ -230,20 +229,20 @@ public:
         return 0;
     }
 
-    // ïîâåðòàº ê³ëüê³ñòü ðÿäê³â ìàòðèö³
+    // повертає кількість рядків матриці
     int GetRows()
     {
         return rows;
     }
 
-    // ïîâåðòàº ê³ëüê³ñòü ñòîâïö³â ìàòðèö³
+    // повертає кількість стовпців матриці
     int GetCols()
     {
         return cols;
     }
 
-// òðàíñïîðòóâàííÿ ìàòðèö³
-void Transp(Matrix& a)// òðàíñïîíóâàííÿ ìàòðèö³
+// транспортування матриці
+void Transp(Matrix& a)
 {
 double temp;
 int rows = a.GetRows();
@@ -259,7 +258,7 @@ int cols = a.GetCols();
     }
 }
 
-    // âèâîäèòü âì³ñò ìàòðèö³
+    // виводить вміст матриці
     void Print()
     {
         if (p != NULL)
@@ -287,16 +286,16 @@ int cols = a.GetCols();
         }
         else
         {
-            // ïîðîæíÿ  ìàòðèöÿ
+            // порожня матриця
             printf("[ ]\n");
         }
     }
 
 public:
-    // äåñòðóêòîð
+    // деструктор
     ~Matrix()
     {
-        // î÷èùàº âèä³ëåíó ïàìÿòü
+        // очищає виділену пам'ять
         for (int r = 0; r < rows; r++)
         {
             delete p[r];
@@ -308,7 +307,7 @@ public:
 private:
     int rows;
     int cols;
-    double** p;         // âêàç³âíèê íà ìàòðèöþ ç çíà÷åííÿìè double
+    double** p;         // вказівник на матрицю з double
 };
 
 /*
@@ -320,7 +319,7 @@ int Size(Matrix& a, const int i)
 }
 
 /*
- * ïîâåðòàº ìàòðèöþ ðîçì³ðîì cols x rows ç çíà÷åííÿìè îäèíèöÿ
+ * повертає матрицю розміром cols x rows з значеннями 1
  */
 Matrix Ones(const int rows, const int cols)
 {
@@ -337,7 +336,7 @@ Matrix Ones(const int rows, const int cols)
 }
 
 /*
- *  ïîâåðòàº ìàòðèöþ ðîçì³ðîì cols x rows ç çíà÷åííÿìè 0
+ *  повертає матрицю розміром cols x rows з значеннями 0
  */
 Matrix Zeros(const int rows, const int cols)
 {
@@ -362,11 +361,11 @@ Matrix Diag(Matrix& v)
     Matrix res;
     if (v.GetCols() == 1)
     {
-        // îòðèìàíà ìàòðèöÿ º âåêòîðîì n x 1
+        // отримана матриця є вектором n x 1
         int rows = v.GetRows();
         res = Matrix(rows, rows);
 
-        // êîï³þºìî çíà÷åííÿ âåêòîðà äî ìàòðèö³
+        // копіюємо значення вектора до матриці
         for (int r=1; r <= rows; r++)
         {
             res(r, r) = v(r, 1);
@@ -374,11 +373,11 @@ Matrix Diag(Matrix& v)
     }
     else if (v.GetRows() == 1)
     {
-        // îòðèìàíà ìàòðèöÿ º âåêòîðîì n x 1
+        // отримана матриця є вектором n x 1
         int cols = v.GetCols();
         res = Matrix(cols, cols);
 
-        // êîï³þºìî çíà÷åííÿ âåêòîðà äî ìàòðèö³
+        // копіюємо значення вектора до матриці
         for (int c=1; c <= cols; c++)
         {
             res(c, c) = v(1, c);
@@ -386,36 +385,36 @@ Matrix Diag(Matrix& v)
     }
     else
     {
-        printf("Ïàðàìåòð äëÿ ä³àãîíàë³ ìàº áóòè âåêòîð\n");
+        printf("Параматр для діагоналі має бути вектором\n");
     }
     return res;
 }
 
 /*
- * ïîâåðòàº äåòåðì³íàíò ìàòðèö³ À
+ * повертає детермінант матриці А
  */
 double Det(Matrix& a)
 {
-    double d = 0;       // çíà÷åííÿ äåòåðì³íàíòà
+    double d = 0;       // значення детермінанта
     int rows = a.GetRows();
     int cols = a.GetRows();
 
     if (rows == cols)
     {
-        // äëÿ êâàäðàòíî¿ ìàòðèö³
+        // для квадратної матриці
         if (rows == 1)
         {
-            //  äëÿ ìàòðèö³ 1 x 1
+            //  для матриці 1 x 1
             d = a(1, 1);
         }
         else if (rows == 2)
         {
-            // äëÿ ìàòðèö³ 2 x 2
+            // для матриці 2 x 2
             d = a(1, 1) * a(2, 2) - a(2, 1) * a(1, 2);
         }
         else
         {
-            // äëÿ ìàòðèö³3 x 3 àáî á³ëüøå
+            // для матриці 3 x 3 або більше
             for (int c = 1; c <= cols; c++)
             {
                 Matrix M = a.Minor(1, c);
@@ -425,19 +424,19 @@ double Det(Matrix& a)
     }
     else
     {
-        printf("Ìàòðèöÿ ïîâèííà áóòè êâàäðàòíîþ\n");
+        printf("Матриця повинна бути квадратною\n");
     }
     return d;
 }
 
 
 /*
- * ïîâåðòàº îáåðíåíó ìàòðèöþ
+ * повертає обернену матрицю
  */
 Matrix inv(Matrix& a)
 {
     Matrix res;
-    double d = 0;       //???????? ????????????
+    double d = 0;       //значення детермінанту
     int rows = a.GetRows();
     int cols = a.GetCols();
 
@@ -470,12 +469,12 @@ Matrix inv(Matrix& a)
 
 int main(int argc, char *argv[])
 {
-        // ñòâîðþºìî ìàòðèöþ 3x3 (ç çíà÷åííÿìè 0)
+        // створюємо матрицю 3x3 (з значеннями 0)
         int cols = 3;
         int rows = 3;
         Matrix A = Matrix(cols, rows);
 
-        // íàäàºìî äåÿêîãî çíà÷åííÿ ìàòðèö³ À
+        // надаємо деякого значення елементам матриці А
         int count = 0;
         for (int r = 1; r <= rows; r++)
         {
@@ -486,15 +485,15 @@ int main(int argc, char *argv[])
             }
         }
 
-        // ïðèñâîºííÿ çíà÷åííÿ åëåìåíòó ìàòðèö³ çà ³íäåêñîì
+        // присвоюємо значення елементу матриці за індексом
         A(2,1) = 3.45;
 
-        // ç÷èòóº çíà÷åííÿ åëåìåíòà ìàòðèö³ çà ³íäåêñîì
+        // зчитує значення елементу матриці за індексом
         double value = A(2,2);
         printf("Znachennya = %f \n", value);
         printf("\n");
 
-        // âèâîäèòü ìàòðèöþ
+        // виводить матрицю
         printf("A = \n");
         A.Print();
         printf("\n");
@@ -504,7 +503,7 @@ int main(int argc, char *argv[])
         B.Print();
         printf("\n");
 
-        Matrix B2 = Matrix(rows, 1);        // âåêòîð
+        Matrix B2 = Matrix(rows, 1);        // вектор
         count = 1;
         for (int r = 1; r <= rows; r++)
         {
@@ -531,13 +530,13 @@ int main(int argc, char *argv[])
         C.Print();
         printf("\n");
 
-        // ñòâîðþº ä³àãîíàëüíó ìàòðèöþ
+        // створюємо діагональну матрицю
         Matrix E = Diag(B2);
         printf("E = \n");
         E.Print();
         printf("\n");
 
-        // îá÷èñëþº äåòåðì³íàíò
+        // обчислюємо детермінант
         Matrix D = Matrix(2, 2);
         D(1,1) = 2;
         D(1,2) = 4;
