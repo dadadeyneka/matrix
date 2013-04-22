@@ -435,36 +435,48 @@ double Det(Matrix& a)
  */
 Matrix inv(Matrix& a)
 {
-    Matrix res;
-    double d = 0;       //значення детермінанту
-    int rows = a.GetRows();
-    int cols = a.GetCols();
-
-    d = Det(a);
-    if (rows == cols && d != 0)
-    {
-        // ??? ?????????? ???????
-        if (rows == 1)
-        {
-            // ??? ??????? 1 x 1 
-            res = Matrix(rows, cols);
-            res(1, 1) = 1 / a(1, 1);
-        }
-        else
-        {
-            // ??? ??????? 3 x 3 ??? ??????
-            Matrix ai = a;        // ?????? ???????? ??????? ?
-            int res;
-      for (int r = 1; r <= rows; r++)
-      {for (int c = 1; c <= cols; c++)
-                Matrix M = a.Minor(r,c);
-                res(r,c)=pow(-1, r+c)*Det(M);
-                    // ??????????? ???????? ???????
-                    res=a.Transp(res)/Det(ai);
-                }
-      }
-      return res;
+        Matrix res;
+        double d = 0;
+        int rows = a.GetRows();
+        int cols = a.GetCols();
+        d = Det(a);
+  if (rows == cols && d != 0) 
+  {
+         if (rows == 1)
+         {
+          res = Matrix(rows, cols);
+          res(1, 1) = 1 / a(1, 1);
+         }
+         else if (rows == 2)
+         {
+          res = Matrix(rows, cols);
+          res(1, 1) = a(2, 2)/d;
+          res(1, 2) = -a(1, 2)/d;
+          res(2, 1) = -a(2, 1)/d;
+          res(2, 2) = a(1, 1)/d;
+          //res = (1/d) * res;
+         }
+         else
+         {
+             Matrix ai = a;
+             //int res;
+             for (int r = 1; r <= rows; r++)
+             {
+                 for (int c = 1; c <= cols; c++)
+                 {Matrix M = a.Minor(r,c);
+                  res(r,c)=pow(-1, r+c)*Det(M);
+                 }
+                 res=a.Transp(res)*(1/Det(ai));
+             }
+         }   
+         return res;
+  }       
+  else 
+   { printf("Детермінант дорівнює нулю");
+     return res;
+   }       
 }
+};
 
 
 int main(int argc, char *argv[])
