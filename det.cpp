@@ -186,6 +186,22 @@ public:
         //  повертає порожню матрицю
         return Matrix();
     }
+    
+    Matrix& operator/(double b) (const Matrix& a)
+    {	rows = a.rows;
+        cols = a.cols;
+        
+    		Matrix res(a.rows, a.cols);
+
+            for (int r = 0; r < a.rows; r++)
+            {
+                for (int c = 0; c < a.cols; c++)
+                {
+                    res.p[r][c] = a.p[r][c]/ b;
+                }
+            }
+         	return res;	
+    }
 
     // повертає мінор матриці, де вибрані елементи будуть видалені
     Matrix Minor(const int row, const int col)
